@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio de Dessin - Crayon Virtuel</title>
+    <title>Studio de Dessin Avancé</title>
     <style>
         * {
             margin: 0;
@@ -13,52 +13,256 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-color: #f8f9fa;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: white;
+            color: #333;
+            overflow-x: hidden;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 20px;
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e1e5e9;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .sidebar-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .close-sidebar {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e1e5e9;
+            font-weight: 600;
+        }
+        
+        /* Bibliothèque de dessins */
+        .library-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .library-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #e1e5e9;
+            transition: all 0.2s ease;
+        }
+        
+        .library-item:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+        
+        .library-item.empty {
+            background: #e9ecef;
+            color: #7f8c8d;
+            font-size: 2rem;
+        }
+        
+        /* Options de crayon */
+        .pencil-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .pencil-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .pencil-type:hover {
+            background: #f8f9fa;
+        }
+        
+        .pencil-type.active {
+            background: #e1f0fa;
+            border-left: 3px solid #3498db;
+        }
+        
+        .pencil-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Fusain */
+        .charcoal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .charcoal-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .charcoal-type:hover {
+            background: #f8f9fa;
+        }
+        
+        .charcoal-type.active {
+            background: #e1f0fa;
+            border-left: 3px solid #3498db;
+        }
+        
+        /* Tutoriels */
+        .tutorial-search {
             width: 100%;
-            max-width: 800px;
+            padding: 10px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .tutorial-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tutorial-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .tutorial-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .tutorial-desc {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        /* Contenu principal */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #2c3e50;
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.2rem;
+            color: #2c3e50;
         }
         
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.1rem;
+            color: #7f8c8d;
             margin-bottom: 20px;
+        }
+        
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         
         .container {
             display: flex;
             flex-direction: column;
-            width: 100%;
-            max-width: 1000px;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            background: white;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e1e5e9;
         }
         
         .toolbar {
             display: flex;
             justify-content: space-between;
             padding: 15px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
         }
         
         .tools {
@@ -67,364 +271,389 @@
         }
         
         .tool-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: white;
+            border: 1px solid #d1d9e0;
             border-radius: 8px;
-            color: white;
             padding: 10px 15px;
+            color: #2c3e50;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
+            gap: 8px;
         }
         
         .tool-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background: #e9ecef;
+            transform: translateY(-1px);
         }
         
         .tool-btn.active {
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        .options {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
         
         .color-picker {
             display: flex;
-            gap: 10px;
             align-items: center;
+            gap: 10px;
         }
         
-        .color-option {
-            width: 30px;
-            height: 30px;
+        .color-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
+            background: transparent;
         }
         
-        .color-option:hover {
-            transform: scale(1.2);
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 50%;
+            border: 2px solid #d1d9e0;
         }
         
-        .color-option.active {
-            border: 2px solid white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
         }
         
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 500px;
-            background-color: white;
-            cursor: crosshair;
-        }
-        
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .slider-container {
+        .size-control {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        
+        .size-label {
+            font-weight: 600;
+            color: #2c3e50;
         }
         
         input[type="range"] {
-            width: 150px;
+            width: 120px;
+            height: 5px;
+            background: #e1e5e9;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
         }
         
-        .action-btns {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            padding: 10px 20px;
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #3498db;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
         
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .canvas-container {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        
+        canvas {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            cursor: crosshair;
+            border: 1px solid #e1e5e9;
         }
         
         .instructions {
+            padding: 15px;
+            text-align: center;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e5e9;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        footer {
             margin-top: 20px;
             text-align: center;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
         }
         
-        .instructions h2 {
-            margin-bottom: 10px;
-        }
-        
-        .instructions ul {
-            text-align: left;
-            display: inline-block;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .close-sidebar {
+                display: block;
+            }
         }
         
         @media (max-width: 768px) {
-            .toolbar, .controls {
+            .toolbar {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             
-            .tools, .color-picker {
+            .tools, .options {
                 justify-content: center;
             }
             
-            .canvas-container {
-                height: 400px;
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .sidebar {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Studio de Dessin Virtuel</h1>
-        <p class="subtitle">Dessinez librement avec votre crayon numérique</p>
-    </header>
-    
-    <div class="container">
-        <div class="toolbar">
-            <div class="tools">
-                <button class="tool-btn active" id="pencil-btn">
-                    <span>✏️</span> Crayon
-                </button>
-                <button class="tool-btn" id="eraser-btn">
-                    <span>🧽</span> Gomme
-                </button>
-            </div>
-            
-            <div class="color-picker">
-                <div class="color-option active" style="background-color: #000000;" data-color="#000000"></div>
-                <div class="color-option" style="background-color: #ff0000;" data-color="#ff0000"></div>
-                <div class="color-option" style="background-color: #0000ff;" data-color="#0000ff"></div>
-                <div class="color-option" style="background-color: #00ff00;" data-color="#00ff00"></div>
-                <div class="color-option" style="background-color: #ffff00;" data-color="#ffff00"></div>
-                <div class="color-option" style="background-color: #ff00ff;" data-color="#ff00ff"></div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Outils de Dessin</div>
+            <button class="close-sidebar" id="close-sidebar">×</button>
+        </div>
+        
+        <!-- Bibliothèque de dessins -->
+        <div class="sidebar-section">
+            <div class="section-title">Bibliothèque</div>
+            <div class="library-items">
+                <div class="library-item" id="save-drawing">💾 Sauvegarder</div>
+                <div class="library-item" id="load-drawing">📂 Charger</div>
+                <div class="library-item empty">+</div>
+                <div class="library-item empty">+</div>
             </div>
         </div>
         
-        <div class="canvas-container">
-            <canvas id="drawing-canvas"></canvas>
+        <!-- Types de crayon -->
+        <div class="sidebar-section">
+            <div class="section-title">Mine de Crayon</div>
+            <div class="pencil-options">
+                <div class="pencil-type active" data-type="standard">
+                    <div class="pencil-icon">✏️</div>
+                    <div>Crayon Standard</div>
+                </div>
+                <div class="pencil-type" data-type="soft">
+                    <div class="pencil-icon">🖊️</div>
+                    <div>Mine Tendre</div>
+                </div>
+                <div class="pencil-type" data-type="hard">
+                    <div class="pencil-icon">✒️</div>
+                    <div>Mine Dure</div>
+                </div>
+                <div class="pencil-type" data-type="mechanical">
+                    <div class="pencil-icon">🔩</div>
+                    <div>Porte-mine</div>
+                </div>
+            </div>
         </div>
         
-        <div class="controls">
-            <div class="slider-container">
-                <span>Taille:</span>
-                <input type="range" id="brush-size" min="1" max="50" value="5">
-                <span id="brush-size-value">5px</span>
+        <!-- Fusain -->
+        <div class="sidebar-section">
+            <div class="section-title">Fusain</div>
+            <div class="charcoal-options">
+                <div class="charcoal-type" data-type="vine">
+                    <div class="pencil-icon">🪵</div>
+                    <div>Fusain de Vigne</div>
+                </div>
+                <div class="charcoal-type" data-type="compressed">
+                    <div class="pencil-icon">🪨</div>
+                    <div>Fusain Comprimé</div>
+                </div>
+                <div class="charcoal-type" data-type="pencil">
+                    <div class="pencil-icon">📏</div>
+                    <div>Porte-fusain</div>
+                </div>
             </div>
-            
-            <div class="action-btns">
-                <button class="action-btn" id="clear-btn">Effacer tout</button>
-                <button class="action-btn" id="save-btn">Sauvegarder</button>
+        </div>
+        
+        <!-- Tutoriels -->
+        <div class="sidebar-section">
+            <div class="section-title">Tutoriels</div>
+            <input type="text" class="tutorial-search" placeholder="Rechercher un tutoriel...">
+            <div class="tutorial-list">
+                <div class="tutorial-item">
+                    <div class="tutorial-title">Dessin de visages</div>
+                    <div class="tutorial-desc">Apprenez les proportions du visage</div>
+                </div>
+                <div class="tutorial-item">
+                    <div class="tutorial-title">Perspective</div>
+                    <div class="tutorial-desc">Maîtrisez la perspective à 1 point de fuite</div>
+                </div>
+                <div class="tutorial-item">
+                    <div class="tutorial-title">Ombres et lumières</div>
+                    <div class="tutorial-desc">Techniques de rendu des volumes</div>
+                </div>
+                <div class="tutorial-item">
+                    <div class="tutorial-title">Dessin au fusain</div>
+                    <div class="tutorial-desc">Spécificités du travail au fusain</div>
+                </div>
             </div>
         </div>
     </div>
     
-    <div class="instructions">
-        <h2>Comment utiliser cet outil de dessin</h2>
-        <ul>
-            <li>Cliquez et glissez pour dessiner avec le crayon</li>
-            <li>Utilisez la gomme pour effacer des parties de votre dessin</li>
-            <li>Changez la couleur en cliquant sur les cercles de couleur</li>
-            <li>Ajustez la taille du crayon avec le curseur</li>
-            <li>Cliquez sur "Effacer tout" pour recommencer à zéro</li>
-            <li>Cliquez sur "Sauvegarder" pour télécharger votre dessin</li>
-        </ul>
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <div class="header">
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+            <h1>Studio de Dessin Avancé</h1>
+        </div>
+        
+        <p class="subtitle">Laissez libre cours à votre créativité avec nos outils de dessin avancés</p>
+        
+        <input type="text" class="search-bar" placeholder="Rechercher des tutoriels, techniques...">
+        
+        <div class="container">
+            <div class="toolbar">
+                <div class="tools">
+                    <button id="pencil-btn" class="tool-btn active">
+                        <span>✏️</span> Crayon
+                    </button>
+                    <button id="charcoal-btn" class="tool-btn">
+                        <span>🪵</span> Fusain
+                    </button>
+                    <button id="eraser-btn" class="tool-btn">
+                        <span>🧽</span> Gomme
+                    </button>
+                    <button id="clear-btn" class="tool-btn">
+                        <span>🗑️</span> Effacer tout
+                    </button>
+                </div>
+                
+                <div class="options">
+                    <div class="color-picker">
+                        <span class="color-label">Couleur:</span>
+                        <input type="color" id="color-picker" value="#000000">
+                    </div>
+                    
+                    <div class="size-control">
+                        <span class="size-label">Taille:</span>
+                        <input type="range" id="size-slider" min="1" max="50" value="5">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="drawing-canvas" width="800" height="500"></canvas>
+            </div>
+            
+            <div class="instructions">
+                <p>Utilisez le crayon ou le fusain pour dessiner et la gomme pour effacer. Ajustez la taille et la couleur selon vos besoins.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Créé avec ❤️ - Studio de Dessin Avancé 2023</p>
+        </footer>
     </div>
 
     <script>
-        // Initialisation du canvas
+        // Récupération des éléments du DOM
         const canvas = document.getElementById('drawing-canvas');
         const ctx = canvas.getContext('2d');
+        const pencilBtn = document.getElementById('pencil-btn');
+        const charcoalBtn = document.getElementById('charcoal-btn');
+        const eraserBtn = document.getElementById('eraser-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const colorPicker = document.getElementById('color-picker');
+        const sizeSlider = document.getElementById('size-slider');
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const saveDrawingBtn = document.getElementById('save-drawing');
+        const loadDrawingBtn = document.getElementById('load-drawing');
+        const pencilTypes = document.querySelectorAll('.pencil-type');
+        const charcoalTypes = document.querySelectorAll('.charcoal-type');
+        const tutorialSearch = document.querySelector('.tutorial-search');
+        const searchBar = document.querySelector('.search-bar');
         
-        // Ajuster la taille du canvas
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-            
-            // Redessiner le contenu existant si nécessaire
-            if (window.drawingData) {
-                ctx.putImageData(window.drawingData, 0, 0);
-            }
-        }
-        
-        // Variables pour le dessin
+        // Variables d'état
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
         let currentTool = 'pencil';
         let currentColor = '#000000';
-        let brushSize = 5;
+        let currentSize = 5;
+        let currentPencilType = 'standard';
+        let currentCharcoalType = 'vine';
         
-        // Éléments de l'interface
-        const pencilBtn = document.getElementById('pencil-btn');
-        const eraserBtn = document.getElementById('eraser-btn');
-        const colorOptions = document.querySelectorAll('.color-option');
-        const brushSizeSlider = document.getElementById('brush-size');
-        const brushSizeValue = document.getElementById('brush-size-value');
-        const clearBtn = document.getElementById('clear-btn');
-        const saveBtn = document.getElementById('save-btn');
+        // Initialisation du canvas
+        function initCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+        }
         
-        // Configuration initiale
-        resizeCanvas();
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        
-        // Événements de dessin
+        // Gestion des événements de dessin
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
         
-        // Événements tactiles pour les appareils mobiles
+        // Gestion des événements tactiles pour les appareils mobiles
         canvas.addEventListener('touchstart', handleTouchStart);
         canvas.addEventListener('touchmove', handleTouchMove);
         canvas.addEventListener('touchend', stopDrawing);
         
-        // Gestionnaires d'événements pour les outils
-        pencilBtn.addEventListener('click', () => setTool('pencil'));
-        eraserBtn.addEventListener('click', () => setTool('eraser'));
-        
-        // Gestionnaires pour les couleurs
-        colorOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                colorOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                currentColor = option.getAttribute('data-color');
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
             });
-        });
+            canvas.dispatchEvent(mouseEvent);
+        }
         
-        // Gestionnaire pour la taille du pinceau
-        brushSizeSlider.addEventListener('input', () => {
-            brushSize = brushSizeSlider.value;
-            brushSizeValue.textContent = `${brushSize}px`;
-        });
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
         
-        // Gestionnaires pour les boutons d'action
-        clearBtn.addEventListener('click', clearCanvas);
-        saveBtn.addEventListener('click', saveDrawing);
-        
-        // Fonctions de dessin
         function startDrawing(e) {
             isDrawing = true;
-            [lastX, lastY] = getCoordinates(e);
+            [lastX, lastY] = getMousePos(canvas, e);
         }
         
         function draw(e) {
             if (!isDrawing) return;
             
-            const [x, y] = getCoordinates(e);
+            const [x, y] = getMousePos(canvas, e);
             
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(x, y);
             
-            if (currentTool === 'pencil') {
-                ctx.strokeStyle = currentColor;
-            } else if (currentTool === 'eraser') {
-                ctx.strokeStyle = '#ffffff';
-            }
-            
-            ctx.lineWidth = brushSize;
-            ctx.stroke();
-            
-            [lastX, lastY] = [x, y];
-            
-            // Sauvegarder l'état du canvas
-            window.drawingData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }
-        
-        function stopDrawing() {
-            isDrawing = false;
-        }
-        
-        // Fonctions pour les outils
-        function setTool(tool) {
-            currentTool = tool;
-            
-            if (tool === 'pencil') {
-                pencilBtn.classList.add('active');
-                eraserBtn.classList.remove('active');
-            } else if (tool === 'eraser') {
-                eraserBtn.classList.add('active');
-                pencilBtn.classList.remove('active');
-            }
-        }
-        
-        function clearCanvas() {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            window.drawingData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        }
-        
-        function saveDrawing() {
-            const link = document.createElement('a');
-            link.download = 'mon-dessin.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-        
-        // Fonctions utilitaires
-        function getCoordinates(e) {
-            let x, y;
-            
-            if (e.type.includes('touch')) {
-                x = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-                y = e.touches[0].clientY - canvas.getBoundingClientRect().top;
-            } else {
-                x = e.offsetX;
-                y = e.offsetY;
-            }
-            
-            return [x, y];
-        }
-        
-        function handleTouchStart(e) {
-            e.preventDefault();
-            startDrawing(e.touches[0]);
-        }
-        
-        function handleTouchMove(e) {
-            e.preventDefault();
-            draw(e.touches[0]);
-        }
-        
-        // Redimensionnement du canvas lors du redimensionnement de la fenêtre
-        window.addEventListener('resize', resizeCanvas);
-        
-        // Initialiser le canvas avec un fond blanc
-        clearCanvas();
-    </script>
-</body>
-  </html>
+     
